@@ -4,6 +4,8 @@ import { User } from './user.model';
 import { ReturnModelType } from '@typegoose/typegoose';
 import { CreateUserDto } from './dto/user.dto';
 import { Country } from 'src/country/country.model';
+import { HttpException, HttpStatus } from '@nestjs/common';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersService {
@@ -14,13 +16,24 @@ export class UsersService {
   ) {}
 
   async createUser(data: CreateUserDto): Promise<User> {
+    const username = data.username;
+    const checkUser = await this.userModel.findOne({ username }).exec();
+    if (checkUser) {
+      throw new HttpException(
+        'user with this name already exists',
+        HttpStatus.CONFLICT,
+      );
+    }
+
+    const hashedPassword = await bcrypt.hash(data.password, 10);
+
     const selectedCountry = await this.countryModel.findOne({
       name: data.country,
     });
 
     const newUser = new this.userModel({
       email: data.email,
-      password: data.password,
+      password: hashedPassword,
       username: data.username,
       country: selectedCountry._id,
     });

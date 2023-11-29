@@ -14,9 +14,9 @@ import { LocalStrategy } from './local.strategy';
 @Module({
   imports: [
     PassportModule,
+    ConfigModule.forRoot(),
     JwtModule.register({
-      secret:
-        'DlFFedRu9WdGz7RXGrrBoMfhgUMmle7qZGU6gilOt4XHDxVFdEvFezuD7V570bjzPQfZZLDP3ByFhYawpli9x3JhKLqumZsI7ZDf/oVSVRqQDItdGBVQeYlSbTPC71hQNtAXSLt8Nmxrz0mQW96+QnmcgCYxiQuhsaxGRf5dKaqeHsNnjyGYsuIhJWrLua0KlC0q4CV4o62IdrPW01RCqnvQshM2vun8ydL67rEwumMaqGQ05UffYGKMTdB+ug9SsPvODi2aAIb+irKNtVCiJFcwR/RXB+jxfWRuMNGcBGayI9JuvKFkCwlg8MVmMa67jZ7jwmLV/lyha7ysCM5GTA==',
+      secret: process.env.JWT_SECRET,
       signOptions: { expiresIn: '60m' },
     }),
     MongooseModule.forFeature([
